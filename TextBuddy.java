@@ -1,4 +1,4 @@
-/* CE1: TextBuddy 
+/* CE2: TextBuddy+
  * Name: Kang You Wei
  * Matriculation Number: A0108380L
  * 
@@ -7,157 +7,177 @@
  */
 
 import java.util.Scanner;
+import java.util.StringTokenizer;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.Arrays;
 
 public class TextBuddy {
-	public static void main(String[] args){
-	    String fileName = args[0];
-	    scanner = new Scanner(System.in);
-	    File file= openFile(fileName);
+	private static Scanner scanner;
 
-	    messageToUser("Welcome to TextBuddy." +fileName +" is ready to be used");
-	    while(true){
-	        System.out.print("command: ");
-	        String command = scanner.nextLine();
-	        String result = executeCommand(command,file);
-	        messageToUser(result);
-	    }
+	public static void main(String[] args){
+		String fileName = args[0];
+		scanner = new Scanner(System.in);
+		File file= openFile(fileName);
+		
+		messageToUser("Welcome to TextBuddy." +fileName +" is ready to be used");
+		while(true){
+			System.out.print("command: ");
+			String command = scanner.nextLine();
+			String result = executeCommand(command,file);
+			messageToUser(result);
+		}
 	}
 
 	// The function below serves to choose the command depending on the keyword provided.
 	public static String executeCommand(String command, File file) {
-	    String commandWord = getFirstWord(command);
-	    if(commandWord.equals("display")){
-	    	return display(file);
-	    }
-
-	    else if(commandWord.equals("add")){     
-	    	return add(file,command);
-	    }
-
-	    else if(commandWord.equals("delete")){      
-	    	return delete(file,command);
-	    }
-
-	    else if(commandWord.equals("clear")){       
-	    	return(clear(file));
-	    }
-
-	    else if(commandWord.equals("search")){		
-	    	return search(file,command);
-	    }
-	   
-	    else if(commandWord.equals("sort")){		
-	    	return sort(file);
-	    }
-	    
-	    else if(commandWord.equals("exit")){        
-	    	System.exit(0); 
-	    }
-
-	    
-	    return ("Command is Invalid");
-
+		String commandWord = getFirstWord(command);
+		if(commandWord.equals("display")){
+		return display(file);
+		}
+		
+		else if(commandWord.equals("add")){		
+		return add(file,command);
+		}
+		
+		else if(commandWord.equals("delete")){		
+		return delete(file,command);
+		}
+		
+		else if(commandWord.equals("clear")){		
+		return clear(file);
+		}
+		
+		else if(commandWord.equals("search")){		
+			return search(file,command);
+		}
+		
+		else if(commandWord.equals("sort")){		
+			return sort(file);
+		}
+		
+		else if(commandWord.equals("exit")){		
+		System.exit(0);	
+		}
+		
+		return ("Command is Invalid");
+	
 	}
+
 	// The function below serves to add a text into the file through the writeToFile function.
 	public static String add(File file, String command) {
-	    String lineToAdd = removeFirstWord(command);
-	    writeToFile(lineToAdd.trim(),file);
-	    return("added to " +file.getName() +": \"" +lineToAdd +"\"");
-	}
-
-	// The function below writes a text into the file.
-	public static void writeToFile(String lineToAdd, File file) {
-	    BufferedWriter fileWritten;
-	    try {
-	        fileWritten = new BufferedWriter(new FileWriter (file.getName(),true));
-	        if(numberOfLine(file)>0){
-	            fileWritten.newLine();
-	        }
-	        fileWritten.write(lineToAdd);
-	        fileWritten.close();
-	    } catch (IOException e) {
-	        messageToUser("Unable to add line");
-	    }
-
+		String lineToAdd = removeFirstWord(command);
+		writeToFile(lineToAdd.trim(),file);
+		return("added to " +file.getName() +": \"" +lineToAdd +"\"");
 	}
 
 	/* The function serves to delete a text from the file given a number.
 	 * The texts in the file are numbered from top to bottom starting with 1.
 	 */
 	public static String delete(File file, String command) {
-
-
-	    String deleteString = removeFirstWord(command);
-
+		
+		
+		String deleteString = removeFirstWord(command);
+		
 	if (isValidDeleteParameter(deleteString, file)){
-	    String deletedLine = "";
-	    try {
-	            Scanner inputLines;
-	            int deleteLineNum = Integer.parseInt(deleteString);
-	            String[] lines;
-	            lines = new String[numberOfLine(file)];
-	            int j = 0;
-	            for(int i = 0; i<numberOfLine(file); i++){
-	                if(i == deleteLineNum-1){
-	                    deletedLine= inputLines.nextLine();
-	                }
-	                else{
-	                	lines[j]=inputLines.nextLine();
-	                	j++;
-	                }
-	            }
-	            inputLines.close();
-	            reinputText(file, lines,j);
-	            return ("deleted from "+file.getName() +": \""+deletedLine +"\""); 
-
-	    }catch (FileNotFoundException e) {
-	            return("File not found during delete");
-	    }
-
-
+		String deletedLine = "";
+		try {
+				Scanner inputLines;
+				int deleteLineNum = Integer.parseInt(deleteString);
+				String[] lines;
+				lines = new String[numberOfLine(file)];
+				int j = 0;
+				inputLines = new Scanner(file);
+				for(int i = 0; i<numberOfLine(file); i++){
+					if(i == deleteLineNum-1){
+						deletedLine= inputLines.nextLine();
+					}
+					else{
+						lines[j]=inputLines.nextLine();
+						j++;
+					}
+				}
+				inputLines.close();
+				reinputText(file, lines,j);
+				return ("deleted from "+file.getName() +": \""+deletedLine +"\""); 
+		
+		}catch (FileNotFoundException e) {
+				return("File not found during delete");
+		}
+	
+			
 	}
 	return("Command is Invalid");
 	}
-	
-	public static String search(File file, String command) {
-	    String searchWord = removeFirstWord(command);
-	    Scanner input;
-	    StringBuilder stringBuilder = new StringBuilder();
-	    try {
-	        input = new Scanner(file);
 
-	        if(!input.hasNext()){
-	            input.close();
-	            return(file.getName() +" is empty.");   
-	        }
-
-	        else{
-
-	            int listNum = 1;
-	            while(input.hasNext()){
-	                String currentLine = input.nextLine();
-	                if(currentLine.contains(searchWord)){
-	                stringBuilder.append(listNum +". " +currentLine +"\n");
-	                listNum++;
-	                }
-	            }
-	            if (listNum == 1){
-	            	stringBuilder.append("Phrase Not Found");
-	            }
-	            input.close();  
-	            }
-	    } catch (FileNotFoundException e) {
-	        return("File not found");
-	    }
-	    return stringBuilder.toString();
+	/* The function below display all text in the file.
+	 * The texts are numbered on their left.
+	 */
+	public static String display(File file) {
+		Scanner input;
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			input = new Scanner(file);
+		
+			if(!input.hasNext()){
+				input.close();
+				return(file.getName() +" is empty.");	
+			}
+			
+			else{
+				
+				int listNum = 1;
+				while(input.hasNext()){
+					stringBuilder.append(listNum +". " +input.nextLine() +"\n");
+					listNum++;
+				}
+				input.close();	
+				}
+		} catch (FileNotFoundException e) {
+			return("File not found");
+		}
+		return stringBuilder.toString();
 	}
-public static String sort(File file) {
+
+	// The file serves to search the file based on the given string or word.
+	public static String search(File file, String command) {
+		String searchWord = removeFirstWord(command);
+		Scanner input;
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			input = new Scanner(file);
+		
+			if(!input.hasNext()){
+				input.close();
+				return(file.getName() +" is empty.");	
+			}
+			
+			else{
+				
+				int listNum = 1;
+				while(input.hasNext()){
+					String currentLine = input.nextLine();
+					if(currentLine.contains(searchWord)){
+					stringBuilder.append(listNum +". " +currentLine +"\n");
+					listNum++;
+					}	
+				}
+				if (listNum == 1){
+				stringBuilder.append("Phrase Not Found");
+				}
+				input.close();	
+				}
+		} catch (FileNotFoundException e) {
+			return("File not found");
+		}
+		return stringBuilder.toString();
+	}
+
+	// The function serves to call up the bubble sort to sort the lines in the file based on alphabetical order.
+
+	public static String sort(File file) {
 		Scanner input;
 		try {
 			input = new Scanner(file);
@@ -171,179 +191,187 @@ public static String sort(File file) {
 				String[] lines;
 				lines = new String[numberOfLine(file)];
 				scanIntoArray(lines,file);
-				for ( int i =1; i< numberOfLine(file);i++){
-					boolean isSorted = true;
-					for( int j=0; j<numberOfLine(file)-1;j++){
-						if(lines[j].compareToIgnoreCase(lines[j+1])==0){
-							continue;
-						}
-						else if (lines[j].compareToIgnoreCase(lines[j+1])>0){
-							String temp = lines[j];
-							lines[j] = lines[j+1];
-							lines[j+1] = temp;
-							isSorted = false;
-						}
-					}
-					if (isSorted){
-						input.close();
-						reinputText(file, lines, numberOfLine(file));
-						return ("File is Sorted");
-					}
-				}
+				bubbleSort(lines,file);
+				
+				reinputText(file, lines, numberOfLine(file));
+				input.close();
+				return ("File is Sorted");
+			}	
 		}catch (FileNotFoundException e) {
 			return("File not found");
 		}
-		input.close();
-	
-		return ("File is Sorted");
-	}
-		
-	private static void scanIntoArray(String[] lines, File file) {
-		Scanner input;
-		try {
-			input = new Scanner(file);
-		for(int i = 0; i<numberOfLine(file); i++){
-				lines[i]= input.nextLine();
-			}
-		input.close();	
-		}catch (FileNotFoundException e) {
-			messageToUser("File not found");
-		}
-	}
-	
-	private static boolean isValidDeleteParameter(String deleteString, File file) {
-	    boolean lineIsInFile;
-
-	    if (areDigits(deleteString) && (numberOfWords(deleteString) == 1)) {
-	        lineIsInFile = Integer.valueOf(deleteString) <= numberOfLine(file);
-	        return lineIsInFile;
-	    }
-	    return false;
-	    }
-
-	 private static boolean areDigits(String deleteString) {
-	        boolean areDigits;
-
-	        areDigits = true;
-	        for (char c : deleteString.toCharArray()) {
-	            if (!Character.isDigit(c)) {
-	            areDigits = false;
-	            break;
-	            }
-	        }
-	        return areDigits;
-	        }
-
-	 private static int numberOfWords(String s) {
-	        StringTokenizer st = new StringTokenizer(s);
-	        return st.countTokens();
-	        }
-
-	/* The function below serves to re-input the text back in to the file after clearing the file
-	 * during the delete text process.
-	 */
-	 public static void reinputText(File file, String[] lines, int totalLines) {
-	    clear(file);
-	    for(int i = 0; i<totalLines;i++){
-			writeToFile(lines[i],file);
-	    }
 	}
 
-	// The function below serves to count the number of lines of text present in the file.
-	public static int numberOfLine(File file) {
-	    Scanner input;
-	    int lineNum = 0;
-	    try {
-	        input = new Scanner(file);
-
-	        if(!input.hasNext()){
-	            input.close();
-	            return lineNum; 
-	        }
-
-	        else{
-
-	            while(input.hasNext()){
-	                input.nextLine();
-	                lineNum++;
-	            }
-	            input.close();  
-	            }
-	    } catch (FileNotFoundException e) {
-	        messageToUser("File not found");
-	    }
-	    return lineNum;
-	}
-
-	/* The function below display all text in the file.
-	 * The texts are numbered on their left.
-	 */
-	public static String display(File file) {
-	    Scanner input;
-	    StringBuilder stringBuilder = new StringBuilder();
-	    try {
-	        input = new Scanner(file);
-
-	        if(!input.hasNext()){
-	            input.close();
-	            return(file.getName() +" is empty.");   
-	        }
-
-	        else{
-
-	            int listNum = 1;
-	            while(input.hasNext()){
-	                stringBuilder.append(listNum +". " +input.nextLine() +"\n");
-	                listNum++;
-	            }
-	            input.close();  
-	            }
-	    } catch (FileNotFoundException e) {
-	        return("File not found");
-	    }
-	    return stringBuilder.toString();
-	}
 
 	// The function below serves to clear all text in the file.
 	public static String clear(File file) {
-	    try {
-	        new BufferedWriter(new FileWriter (file,false)).write("");
-	    } catch (IOException e) {
-	        messageToUser("Unable to clear");
-	    }
-	    return("All content cleared from " +file.getName());
-	}
-
-	// The function below serves to print the message to the user.  
-	public static void messageToUser(String text) {
-	    System.out.println(text);
+		try {
+			new BufferedWriter(new FileWriter (file,false)).write("");
+		} catch (IOException e) {
+			messageToUser("Unable to clear");
+		}
+		return("All content cleared from " +file.getName());
 	}
 
 	/* The function below serves to open the file given the file name.
 	 * If no file by the given file name is found, the program will attempt to create the file.
 	 */
 	public static File openFile(String fileName) {
-	        File file = new File(fileName);
-	            try{
-	                if(!file.exists()){
-	                    file.createNewFile();
-	                }
-	            }
-	            catch(IOException e){
-	                System.out.println("Error in reading/ creating of file.");
-	                System.exit(1);
-	            }
-	            return file;
+			File file = new File(fileName);
+				try{
+					if(!file.exists()){
+						file.createNewFile();
+					}
+				}
+				catch(IOException e){
+					System.out.println("Error in reading/ creating of file.");
+					System.exit(1);
+				}
+				return file;
 	}
 
-	 private static String removeFirstWord(String commandLine) {
-	        return commandLine.replace(getFirstWord(commandLine), "").trim();
-	        }
+	// The function below serves to print the message to the user.	
+	public static void messageToUser(String text) {
+		System.out.println(text);
+	}
 
-	        // Extracts commandWord from the commandLine
-	        private static String getFirstWord(String commandLine) {
-	        StringTokenizer tokenizedCommand = new StringTokenizer(commandLine);
-	        String commandWord = tokenizedCommand.nextToken();
+	// The function extracts commandWord from the commandLine
+	private static String getFirstWord(String commandLine) {
+	StringTokenizer tokenizedCommand = new StringTokenizer(commandLine);
+	String commandWord = tokenizedCommand.nextToken();
+	
+	return commandWord;
+	}
 
-	        return commandWord;
-	        }
+	/* The functions do the sorting for the array.
+	 * If the file contains two exact same word with different cases, the order will be based on which
+	 * is first to be input.
+	 */
+	private static void bubbleSort(String[] lines, File file) {
+		Scanner input;
+		try {
+			input = new Scanner(file);
+		for ( int i =1; i< numberOfLine(file);i++){
+			boolean isSorted = true;
+			for( int j=0; j<numberOfLine(file)-1;j++){
+				if(lines[j].compareToIgnoreCase(lines[j+1])==0){
+					continue;
+				}
+				else if (lines[j].compareToIgnoreCase(lines[j+1])>0){
+					String temp = lines[j];
+					lines[j] = lines[j+1];
+					lines[j+1] = temp;
+					isSorted = false;
+				}
+			}
+			if (isSorted){
+				input.close();
+				break;
+			}
+		}	
+		}catch (FileNotFoundException e) {
+			messageToUser("File not found");
+		}		
+	}
+
+	/* The function below serves to re-input the text back in to the file after clearing the file
+	 * during the delete text process.
+	 */
+	public static void reinputText(File file, String[] lines, int totalLines) {
+		clear(file);
+		for(int i = 0; i<totalLines;i++){
+			writeToFile(lines[i],file);
+		}
+	}
+	// The function below writes a text into the file.
+	public static void writeToFile(String lineToAdd, File file) {
+		BufferedWriter fileWritten;
+		try {
+			fileWritten = new BufferedWriter(new FileWriter (file.getName(),true));
+			if(numberOfLine(file)>0){
+				fileWritten.newLine();
+			}
+			fileWritten.write(lineToAdd);
+			fileWritten.close();
+		} catch (IOException e) {
+			messageToUser("Unable to add line");
+		}
+		
+	}
+
+	// The function serves to put all the lines in the file into a string array for sorting.
+	private static void scanIntoArray(String[] lines, File file) {
+		Scanner input;
+		try {
+			input = new Scanner(file);
+		for(int i = 0; i<numberOfLine(file); i++){
+			lines[i]= input.nextLine();
+			}
+		input.close();	
+		}catch (FileNotFoundException e) {
+			messageToUser("File not found");
+		}
+	}
+
+	// The function below serves to count the number of lines of text present in the file.
+	public static int numberOfLine(File file) {
+		Scanner input;
+		int lineNum = 0;
+		try {
+			input = new Scanner(file);
+		
+			if(!input.hasNext()){
+				input.close();
+				return lineNum;	
+			}
+			
+			else{
+				
+				while(input.hasNext()){
+					input.nextLine();
+					lineNum++;
+				}
+				input.close();	
+				}
+		} catch (FileNotFoundException e) {
+			messageToUser("File not found");
+		}
+		return lineNum;
+	}
+
+	//The function serves to remove the command word which is the first word that the user inputs.
+	private static String removeFirstWord(String commandLine) {
+	return commandLine.replace(getFirstWord(commandLine), "").trim();
+	}
+
+	//The function serves to check whether it is possible to delete the line.
+	private static boolean isValidDeleteParameter(String deleteString, File file) {
+	boolean lineIsInFile;
+	
+	if (areDigits(deleteString) && (numberOfWords(deleteString) == 1)) {
+	    lineIsInFile = Integer.valueOf(deleteString) <= numberOfLine(file);
+	    return lineIsInFile;
+	}
+	return false;
+	}
+
+	//The function serves to check whether the input is a digit for the delete function to work.
+	private static boolean areDigits(String deleteString) {
+	boolean areDigits;
+	
+	areDigits = true;
+	for (char c : deleteString.toCharArray()) {
+	    if (!Character.isDigit(c)) {
+		areDigits = false;
+		break;
+	    }
+	}
+	return areDigits;
+	}
+	
+	// The function serves to count the number of words in the line for use in the delete function
+	private static int numberOfWords(String s) {
+	StringTokenizer st = new StringTokenizer(s);
+	return st.countTokens();
+	}
+}
