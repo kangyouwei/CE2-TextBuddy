@@ -33,25 +33,30 @@ public class TextBuddy {
 	public static String executeCommand(String command, File file) {
 	    String commandWord = getFirstWord(command);
 	    if(commandWord.equals("display")){
-	    return display(file);
+	    	return display(file);
 	    }
 
 	    else if(commandWord.equals("add")){     
-	    return add(file,command);
+	    	return add(file,command);
 	    }
 
 	    else if(commandWord.equals("delete")){      
-	    return delete(file,command);
+	    	return delete(file,command);
 	    }
 
 	    else if(commandWord.equals("clear")){       
-	    return(clear(file));
+	    	return(clear(file));
 	    }
 
+	    else if(commandWord.equals("search")){		
+	    	return search(file,command);
+	    }
+	    
 	    else if(commandWord.equals("exit")){        
-	    System.exit(0); 
+	    	System.exit(0); 
 	    }
 
+	    
 	    return ("Command is Invalid");
 
 	}
@@ -114,6 +119,37 @@ public class TextBuddy {
 	}
 	return("Command is Invalid");
 	}
+	
+	public static String search(File file, String command) {
+	    String searchWord = removeFirstWord(command);
+	    Scanner input;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    try {
+	        input = new Scanner(file);
+
+	        if(!input.hasNext()){
+	            input.close();
+	            return(file.getName() +" is empty.");   
+	        }
+
+	        else{
+
+	            int listNum = 1;
+	            while(input.hasNext()){
+	                String currentLine = input.nextLine();
+	                if(currentLine.contains(searchWord)){
+	                stringBuilder.append(listNum +". " +currentLine +"\n");
+	                listNum++;
+	                }
+	            }
+	            input.close();  
+	            }
+	    } catch (FileNotFoundException e) {
+	        return("File not found");
+	    }
+	    return stringBuilder.toString();
+	}
+	
 	private static boolean isValidDeleteParameter(String deleteString, File file) {
 	    boolean lineIsInFile;
 
