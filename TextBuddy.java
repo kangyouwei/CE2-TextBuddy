@@ -172,16 +172,24 @@ public static String sort(File file) {
 				lines = new String[numberOfLine(file)];
 				scanIntoArray(lines,file);
 				for ( int i =1; i< numberOfLine(file);i++){
+					boolean isSorted = true;
 					for( int j=0; j<numberOfLine(file)-1;j++){
-						if (lines[j].charAt(0)> lines[j+1].charAt(0)){
+						if(lines[j].compareToIgnoreCase(lines[j+1])==0){
+							continue;
+						}
+						else if (lines[j].compareToIgnoreCase(lines[j+1])>0){
 							String temp = lines[j];
 							lines[j] = lines[j+1];
 							lines[j+1] = temp;
+							isSorted = false;
 						}
 					}
+					if (isSorted){
+						input.close();
+						reinputText(file, lines, numberOfLine(file));
+						return ("File is Sorted");
+					}
 				}
-				reinputText(file, lines, numberOfLine(file));
-			}
 		}catch (FileNotFoundException e) {
 			return("File not found");
 		}
