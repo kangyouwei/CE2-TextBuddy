@@ -16,17 +16,20 @@ import java.io.FileWriter;
 
 public class TextBuddy {
 	private static Scanner scanner;
-	private static final String MSG_WELCOME = "Welcome to TextBuddy. %s is ready to be used";
-	private static final String MSG_INVALID_COMMAND = "Command is Invalid";
-	private static final String MSG_MISSING_FILE = "File not found";
-	private static final String MSG_FAIL_SEARCH = "Phrase not found";
-	private static final String MSG_EMPTY_FILE = "%s is empty";
-	private static final String MSG_FAIL_ADD = "Unable to add line";
-	private static final String MSG_SUCCESS_SORT = "File is sorted";
-	private static final String MSG_FAIL_CLEAR = "Unable to clear";
-	private static final String MSG_SUCCESS_CLEAR = "All lines cleared from %s";
-	private static final String MSG_FAIL_READ_FILE = "Unable to read file";
+	private static final String MSG_WELCOME = "Welcome to TextBuddy. %s is ready to be used.";
 	private static final String MSG_COMMAND = "command: ";
+	private static final String MSG_INVALID_COMMAND = "Command is Invalid.";
+	private static final String MSG_MISSING_FILE = "File not found.";
+	private static final String MSG_EMPTY_FILE = "%s is empty.";
+	private static final String MSG_SUCCESS_ADD = "Added to %s: \"%s\"";
+	private static final String MSG_SUCCESS_DELETE = "Deleted from %s: \"%s\"";
+	private static final String MSG_SUCCESS_CLEAR = "All lines cleared from %s.";
+	private static final String MSG_SUCCESS_SORT = "File is sorted.";
+	private static final String MSG_FAIL_ADD = "Unable to add line.";
+	private static final String MSG_FAIL_CLEAR = "Unable to clear.";
+	private static final String MSG_FAIL_SEARCH = "Phrase not found.";
+	private static final String MSG_FAIL_READ_FILE = "Unable to read file.";
+	
 	
 	
 
@@ -82,8 +85,8 @@ public class TextBuddy {
 	// The function below serves to add a text into the file through the writeToFile function.
 	public static String add(File file, String command) {
 		String lineToAdd = removeFirstWord(command);
-		writeToFile(lineToAdd.trim(),file);
-		return("added to " +file.getName() +": \"" +lineToAdd +"\"");
+		writeToFile(lineToAdd,file);
+		return(String.format(MSG_SUCCESS_ADD, file.getName(),lineToAdd));
 	}
 
 	/* The function serves to delete a text from the file given a number.
@@ -114,7 +117,7 @@ public class TextBuddy {
 				}
 				inputLines.close();
 				reinputText(file, lines,j);
-				return ("deleted from "+file.getName() +": \""+deletedLine +"\""); 
+				return (String.format(MSG_SUCCESS_DELETE, file.getName(),deletedLine)); 
 		
 		}catch (FileNotFoundException e) {
 				return(MSG_MISSING_FILE);
@@ -136,7 +139,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(String.format(MSG_EMPTY_FILE, fileName));	
+				return(String.format(MSG_EMPTY_FILE, file.getName()));	
 			}
 			
 			else{
@@ -164,7 +167,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(String.format(MSG_EMPTY_FILE, fileName));	
+				return(String.format(MSG_EMPTY_FILE, file.getName()));	
 			}
 			
 			else{
@@ -197,7 +200,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(String.format(MSG_EMPTY_FILE, fileName));
+				return(String.format(MSG_EMPTY_FILE, file.getName()));
 			}
 			
 			else{
@@ -223,7 +226,7 @@ public class TextBuddy {
 		} catch (IOException e) {
 			messageToUser(MSG_FAIL_CLEAR);
 		}
-		return(String.format(MSG_SUCCESS_CLEAR, fileName);
+		return(String.format(MSG_SUCCESS_CLEAR, file.getName()));
 	}
 
 	/* The function below serves to open the file given the file name.
@@ -354,7 +357,7 @@ public class TextBuddy {
 
 	//The function serves to remove the command word which is the first word that the user inputs.
 	private static String removeFirstWord(String commandLine) {
-	return commandLine.replace(getFirstWord(commandLine), "").trim();
+	return commandLine.replaceFirst(getFirstWord(commandLine), "").trim();
 	}
 
 	//The function serves to check whether it is possible to delete the line.
@@ -388,3 +391,4 @@ public class TextBuddy {
 	return st.countTokens();
 	}
 }
+
