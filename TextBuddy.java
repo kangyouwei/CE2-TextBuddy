@@ -7,12 +7,12 @@
  */
 
 import java.util.Scanner;
-import java.util.Vector;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Arrays;
 
 public class TextBuddy {
 	public static void main(String[] args){
@@ -50,6 +50,10 @@ public class TextBuddy {
 
 	    else if(commandWord.equals("search")){		
 	    	return search(file,command);
+	    }
+	   
+	    else if(commandWord.equals("sort")){		
+	    	return sort(file);
 	    }
 	    
 	    else if(commandWord.equals("exit")){        
@@ -96,19 +100,20 @@ public class TextBuddy {
 	    try {
 	            Scanner inputLines;
 	            int deleteLineNum = Integer.parseInt(deleteString);
-	            Vector<String> lines = new Vector<String>();
-
-	            inputLines = new Scanner(file);
+	            String[] lines;
+	            lines = new String[numberOfLine(file)];
+	            int j = 0;
 	            for(int i = 0; i<numberOfLine(file); i++){
 	                if(i == deleteLineNum-1){
 	                    deletedLine= inputLines.nextLine();
 	                }
 	                else{
-	                    lines.add(inputLines.nextLine());
+	                	lines[j]=inputLines.nextLine();
+	                	j++;
 	                }
 	            }
 	            inputLines.close();
-	            reinputText(file, lines);
+	            reinputText(file, lines,j);
 	            return ("deleted from "+file.getName() +": \""+deletedLine +"\""); 
 
 	    }catch (FileNotFoundException e) {
@@ -152,6 +157,43 @@ public class TextBuddy {
 	    }
 	    return stringBuilder.toString();
 	}
+public static String sort(File file) {
+		Scanner input;
+		try {
+			input = new Scanner(file);
+		
+			if(!input.hasNext()){
+				input.close();
+				return(file.getName() +" is empty.");
+			}
+			
+			else{
+				String[] lines;
+				lines = new String[numberOfLine(file)];
+				scanIntoArray(lines,file);
+				Arrays.sort(lines);
+				reinputText(file, lines, numberOfLine(file));
+			}
+		}catch (FileNotFoundException e) {
+			return("File not found");
+		}
+		input.close();
+	
+		return ("File is Sorted");
+	}
+		
+	private static void scanIntoArray(String[] lines, File file) {
+		Scanner input;
+		try {
+			input = new Scanner(file);
+		for(int i = 0; i<numberOfLine(file); i++){
+				lines[i]= input.nextLine();
+			}
+		input.close();	
+		}catch (FileNotFoundException e) {
+			messageToUser("File not found");
+		}
+	}
 	
 	private static boolean isValidDeleteParameter(String deleteString, File file) {
 	    boolean lineIsInFile;
@@ -184,10 +226,10 @@ public class TextBuddy {
 	/* The function below serves to re-input the text back in to the file after clearing the file
 	 * during the delete text process.
 	 */
-	public static void reinputText(File file, Vector<String> lines) {
+	 public static void reinputText(File file, String[] lines, int totalLines) {
 	    clear(file);
-	    for(int i = 0; i<lines.size();i++){
-	        writeToFile(lines.get(i),file);
+	    for(int i = 0; i<totalLines;i++){
+			writeToFile(lines[i],file);
 	    }
 	}
 
