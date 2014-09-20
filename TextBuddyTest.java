@@ -44,6 +44,17 @@ public class TextBuddyTest {
   assertEquals("search for ab " , "1. aabb\n2. aba\n3. bab\n"  ,TextBuddy.search(file, "search ab"));
   assertEquals("search for aa " , "1. aaa\n2. bbaa\n3. aabb\n"  ,TextBuddy.search(file, "search aa"));
 
+  TextBuddy.clear(file);	
+  assertEquals("File is cleared" , 0 ,TextBuddy.numberOfLine(file));
+	
+  assertEquals("add 1", ("added to " + fileName + ": \"bbnana\""), TextBuddy.add(file, "add bbnana"));
+  assertEquals("add 2", ("added to " + fileName + ": \"pineapple\""), TextBuddy.add(file, "add pineapple"));
+  assertEquals("add 3", ("added to " + fileName + ": \"apple\""), TextBuddy.add(file, "add apple"));
+  assertEquals("add 4", ("added to " + fileName + ": \"orange\""), TextBuddy.add(file, "add orange"));
+  assertEquals("add 5", ("added to " + fileName + ": \"banana\""), TextBuddy.add(file, "add banana"));
+
+  assertEquals("sort", ("File is Sorted"), TextBuddy.sort(file));
+  assertEquals("display", "1. apple\n2. banana\n3. bbnana\n4. orange\n5. pineapple\n", TextBuddy.display(file));
   }
  }
 
