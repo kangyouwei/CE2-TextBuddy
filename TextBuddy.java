@@ -142,6 +142,9 @@ public class TextBuddy {
 	                listNum++;
 	                }
 	            }
+	            if (listNum == 1){
+	            	stringBuilder.append("Phrase Not Found");
+	            }
 	            input.close();  
 	            }
 	    } catch (FileNotFoundException e) {
