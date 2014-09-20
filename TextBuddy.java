@@ -171,7 +171,15 @@ public static String sort(File file) {
 				String[] lines;
 				lines = new String[numberOfLine(file)];
 				scanIntoArray(lines,file);
-				Arrays.sort(lines);
+				for ( int i =1; i< numberOfLine(file);i++){
+					for( int j=0; j<numberOfLine(file)-1;j++){
+						if (lines[j].charAt(0)> lines[j+1].charAt(0)){
+							String temp = lines[j];
+							lines[j] = lines[j+1];
+							lines[j+1] = temp;
+						}
+					}
+				}
 				reinputText(file, lines, numberOfLine(file));
 			}
 		}catch (FileNotFoundException e) {
