@@ -16,15 +16,28 @@ import java.io.FileWriter;
 
 public class TextBuddy {
 	private static Scanner scanner;
+	private static final String MSG_WELCOME = "Welcome to TextBuddy. %s is ready to be used";
+	private static final String MSG_INVALID_COMMAND = "Command is Invalid";
+	private static final String MSG_MISSING_FILE = "File not found";
+	private static final String MSG_FAIL_SEARCH = "Phrase not found";
+	private static final String MSG_EMPTY_FILE = "%s is empty";
+	private static final String MSG_FAIL_ADD = "Unable to add line";
+	private static final String MSG_SUCCESS_SORT = "File is sorted";
+	private static final String MSG_FAIL_CLEAR = "Unable to clear";
+	private static final String MSG_SUCCESS_CLEAR = "All lines cleared from %s";
+	private static final String MSG_FAIL_READ_FILE = "Unable to read file";
+	private static final String MSG_COMMAND = "command: ";
+	
+	
 
 	public static void main(String[] args){
 		String fileName = args[0];
 		scanner = new Scanner(System.in);
 		File file= openFile(fileName);
 		
-		messageToUser("Welcome to TextBuddy." +fileName +" is ready to be used");
+		messageToUser(String.format(MSG_WELCOME, fileName));
 		while(true){
-			System.out.print("command: ");
+			System.out.print(MSG_COMMAND);
 			String command = scanner.nextLine();
 			String result = executeCommand(command,file);
 			messageToUser(result);
@@ -62,7 +75,7 @@ public class TextBuddy {
 		System.exit(0);	
 		}
 		
-		return ("Command is Invalid");
+		return (MSG_INVALID_COMMAND);
 	
 	}
 
@@ -104,12 +117,12 @@ public class TextBuddy {
 				return ("deleted from "+file.getName() +": \""+deletedLine +"\""); 
 		
 		}catch (FileNotFoundException e) {
-				return("File not found during delete");
+				return(MSG_MISSING_FILE);
 		}
 	
 			
 	}
-	return("Command is Invalid");
+	return(MSG_INVALID_COMMAND);
 	}
 
 	/* The function below display all text in the file.
@@ -123,7 +136,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(file.getName() +" is empty.");	
+				return(String.format(MSG_EMPTY_FILE, fileName));	
 			}
 			
 			else{
@@ -136,7 +149,7 @@ public class TextBuddy {
 				input.close();	
 				}
 		} catch (FileNotFoundException e) {
-			return("File not found");
+			return(MSG_MISSING_FILE);
 		}
 		return stringBuilder.toString();
 	}
@@ -151,7 +164,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(file.getName() +" is empty.");	
+				return(String.format(MSG_EMPTY_FILE, fileName));	
 			}
 			
 			else{
@@ -165,12 +178,12 @@ public class TextBuddy {
 					}	
 				}
 				if (listNum == 1){
-				stringBuilder.append("Phrase Not Found");
+				stringBuilder.append(MSG_FAIL_SEARCH);
 				}
 				input.close();	
 				}
 		} catch (FileNotFoundException e) {
-			return("File not found");
+			return(MSG_MISSING_FILE);
 		}
 		return stringBuilder.toString();
 	}
@@ -184,7 +197,7 @@ public class TextBuddy {
 		
 			if(!input.hasNext()){
 				input.close();
-				return(file.getName() +" is empty.");
+				return(String.format(MSG_EMPTY_FILE, fileName));
 			}
 			
 			else{
@@ -195,10 +208,10 @@ public class TextBuddy {
 				
 				reinputText(file, lines, numberOfLine(file));
 				input.close();
-				return ("File is Sorted");
+				return (MSG_SUCCESS_SORT);
 			}	
 		}catch (FileNotFoundException e) {
-			return("File not found");
+			return(MSG_MISSING_FILE);
 		}
 	}
 
@@ -208,9 +221,9 @@ public class TextBuddy {
 		try {
 			new BufferedWriter(new FileWriter (file,false)).write("");
 		} catch (IOException e) {
-			messageToUser("Unable to clear");
+			messageToUser(MSG_FAIL_CLEAR);
 		}
-		return("All content cleared from " +file.getName());
+		return(String.format(MSG_SUCCESS_CLEAR, fileName);
 	}
 
 	/* The function below serves to open the file given the file name.
@@ -224,7 +237,7 @@ public class TextBuddy {
 					}
 				}
 				catch(IOException e){
-					System.out.println("Error in reading/ creating of file.");
+					System.out.println(MSG_FAIL_READ_FILE);
 					System.exit(1);
 				}
 				return file;
@@ -270,7 +283,7 @@ public class TextBuddy {
 			}
 		}	
 		}catch (FileNotFoundException e) {
-			messageToUser("File not found");
+			messageToUser(MSG_MISSING_FILE);
 		}		
 	}
 
@@ -294,7 +307,7 @@ public class TextBuddy {
 			fileWritten.write(lineToAdd);
 			fileWritten.close();
 		} catch (IOException e) {
-			messageToUser("Unable to add line");
+			messageToUser(MSG_FAIL_ADD);
 		}
 		
 	}
@@ -309,7 +322,7 @@ public class TextBuddy {
 			}
 		input.close();	
 		}catch (FileNotFoundException e) {
-			messageToUser("File not found");
+			messageToUser(MSG_MISSING_FILE);
 		}
 	}
 
@@ -334,7 +347,7 @@ public class TextBuddy {
 				input.close();	
 				}
 		} catch (FileNotFoundException e) {
-			messageToUser("File not found");
+			messageToUser(MSG_MISSING_FILE);
 		}
 		return lineNum;
 	}
