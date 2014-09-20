@@ -40,6 +40,9 @@ public class TextBuddyTest {
     + "3. aabb\n4. aba\n5. bab\n6. bac\n7. a\n"  ,TextBuddy.search(file, "search a"));
   
   assertEquals("word not found" , "Phrase Not Found"  ,TextBuddy.search(file, "search d"));
+  
+  assertEquals("search for ab " , "1. aabb\n2. aba\n3. bab\n"  ,TextBuddy.search(file, "search ab"));
+  assertEquals("search for aa " , "1. aaa\n2. bbaa\n3. aabb\n"  ,TextBuddy.search(file, "search aa"));
 
   }
  }
